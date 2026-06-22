@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<title>參觀紀錄表 ｜ 小布迪音樂藝術托嬰中心</title>
+<style>
+  :root{
+    --pink:#2cabba;
+    --pink-deep:#1f8c99;
+    --cream:#f2faf9;
+    --cream-deep:#e3f2f1;
+    --ink:#2f3a3b;
+    --ink-soft:#6c8284;
+    --sage:#5fb8a8;
+    --sage-deep:#3d9686;
+    --line:#cfe9e7;
+    --white:#ffffff;
+    --error:#c75c5c;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--cream);
+    background-image:
+      radial-gradient(circle at 10% 8%, rgba(44,171,186,0.14) 0, transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(95,184,168,0.16) 0, transparent 45%);
+    color:var(--ink);
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+    line-height:1.6;
+    min-height:100vh;
+    padding:0 0 60px;
+  }
+  .wrap{max-width:560px;margin:0 auto;padding:0 18px;}
+
+  header.hero{
+    text-align:center;
+    padding:34px 18px 28px;
+    position:relative;
+  }
+  .logo-img{
+    width:64px;
+    height:64px;
+    margin-bottom:10px;
+    filter:drop-shadow(0 3px 8px rgba(31,140,153,0.25));
+  }
+  header.hero h1{
+    font-size:21px;
+    margin:0 0 4px;
+    color:var(--pink-deep);
+    font-weight:900;
+    letter-spacing:1px;
+  }
+  header.hero .sub{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin:0;
+  }
+  header.hero .badge{
+    display:inline-block;
+    margin-top:14px;
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:6px 16px;
+    font-size:12.5px;
+    color:var(--sage-deep);
+    box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .toggle-row{
+    display:flex;
+    gap:10px;
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:6px;
+    margin:0 0 22px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.04);
+  }
+  .toggle-btn{
+    flex:1;
+    border:none;
+    background:transparent;
+    padding:13px 8px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:700;
+    color:var(--ink-soft);
+    cursor:pointer;
+    transition:all .2s ease;
+    font-family:inherit;
+  }
+  .toggle-btn.active{
+    background:var(--pink);
+    color:var(--white);
+    box-shadow:0 3px 10px rgba(212,131,156,0.35);
+  }
+
+  form{display:flex;flex-direction:column;gap:14px;}
+
+  .card{
+    background:var(--white);
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:18px 18px 6px;
+    box-shadow:0 2px 12px rgba(61,53,48,0.05);
+  }
+  .card-title{
+    font-size:13px;
+    font-weight:700;
+    color:var(--sage-deep);
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin:0 0 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .card-title::before{
+    content:"";
+    width:6px;height:6px;
+    border-radius:50%;
+    background:var(--sage);
+    display:inline-block;
+  }
+
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block;
+    font-size:14.5px;
+    font-weight:700;
+    margin-bottom:7px;
+    color:var(--ink);
+  }
+  .field label .req{color:var(--pink-deep);margin-left:2px;}
+  .field .hint{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin:-3px 0 7px;
+  }
+
+  input[type=text],
+  input[type=tel],
+  input[type=date],
+  input[type=number],
+  textarea{
+    width:100%;
+    padding:12px 14px;
+    border:1.5px solid var(--line);
+    border-radius:11px;
+    font-size:15.5px;
+    font-family:inherit;
+    color:var(--ink);
+    background:var(--cream);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  input:focus, textarea:focus{
+    outline:none;
+    border-color:var(--pink);
+    background:var(--white);
+  }
+  textarea{resize:vertical;min-height:80px;}
+
+  .chip-group{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+  }
+  .chip{
+    border:1.5px solid var(--line);
+    background:var(--cream);
+    border-radius:11px;
+    padding:11px 16px;
+    font-size:14.5px;
+    font-weight:600;
+    color:var(--ink-soft);
+    cursor:pointer;
+    user-select:none;
+    transition:all .15s ease;
+    flex:1 1 auto;
+    text-align:center;
+    min-width:84px;
+  }
+  .chip input{display:none;}
+  .chip.selected{
+    background:var(--pink);
+    border-color:var(--pink);
+    color:var(--white);
+  }
+  .chip.sage.selected{
+    background:var(--sage);
+    border-color:var(--sage);
+  }
+
+  .inline-extra{
+    margin-top:10px;
+    display:none;
+  }
+  .inline-extra.show{display:block;}
+
+  .deposit-row{
+    display:flex;
+    gap:10px;
+  }
+  .deposit-row .field{flex:1;margin-bottom:0;}
+
+  .section-hide{display:none;}
+  .section-show{display:block;}
+
+  footer.submit-area{
+    margin-top:6px;
+    text-align:center;
+  }
+  button.submit-btn{
+    width:100%;
+    background:var(--pink-deep);
+    color:var(--white);
+    border:none;
+    border-radius:14px;
+    padding:16px;
+    font-size:17px;
+    font-weight:800;
+    letter-spacing:1px;
+    cursor:pointer;
+    font-family:inherit;
+    box-shadow:0 6px 18px rgba(212,131,156,0.35);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  button.submit-btn:active{transform:translateY(1px);box-shadow:0 3px 10px rgba(212,131,156,0.3);}
+  button.submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
+
+  .footer-note{
+    font-size:12px;
+    color:var(--ink-soft);
+    text-align:center;
+    margin-top:14px;
+  }
+
+  .msg-area{
+    text-align:center;
+    padding:60px 24px;
+  }
+  .msg-area .icon{font-size:46px;margin-bottom:14px;}
+  .msg-area h2{color:var(--sage-deep);font-size:20px;margin:0 0 8px;}
+  .msg-area p{color:var(--ink-soft);font-size:14.5px;margin:0;}
+  .msg-area.error h2{color:var(--error);}
+
+  .error-text{
+    color:var(--error);
+    font-size:12.5px;
+    margin-top:6px;
+    display:none;
+  }
+  .field.has-error input,
+  .field.has-error textarea{border-color:var(--error);}
+  .field.has-error .error-text{display:block;}
+
+  #app{display:block;}
+  #successScreen, #errorScreen{display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <img src="assets/logo.png" alt="小布迪音樂藝術托嬰中心 LOGO" class="logo-img">
+    <h1>臺南市私立小布迪音樂藝術托嬰中心</h1>
+    <p class="sub">參觀紀錄表 ・ 新生參觀資料表</p>
+    <div class="badge" id="todayBadge">參觀日期：載入中...</div>
+  </header>
+
+  <div id="app">
+    <div class="toggle-row">
+      <button type="button" class="toggle-btn active" data-status="pregnant" id="btnPregnant">寶寶懷孕中</button>
+      <button type="button" class="toggle-btn" data-status="born" id="btnBorn">寶寶已出生</button>
+    </div>
+
+    <form id="visitForm">
+
+      <!-- 已出生：寶寶資料 -->
+      <div class="card section-hide" id="cardBabyBorn">
+        <p class="card-title">寶寶資料</p>
+        <div class="field">
+          <label>寶寶姓名 <span class="req">*</span></label>
+          <input type="text" name="babyName" placeholder="請輸入寶寶姓名">
+          <div class="error-text">請填寫寶寶姓名</div>
+        </div>
+        <div class="field">
+          <label>寶寶生日 <span class="req">*</span></label>
+          <input type="date" name="babyBirthday">
+          <div class="error-text">請選擇寶寶生日</div>
+        </div>
+        <div class="field">
+          <label>寶寶排行</label>
+          <div class="chip-group" data-name="babyOrder">
+            <label class="chip"><input type="radio" name="babyOrder" value="老大">老大</label>
+            <label class="chip"><input type="radio" name="babyOrder" value="老二">老二</label>
+            <label class="chip"><input type="radio" name="babyOrder" value="老三">老三</label>
+            <label class="chip"><input type="radio" name="babyOrder" value="雙寶">雙寶</label>
+            <label class="chip"><input type="radio" name="babyOrder" value="其他">其他</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 懷孕中：預產期與排行 -->
+      <div class="card section-show" id="cardBabyPregnant">
+        <p class="card-title">寶寶資料（預期）</p>
+        <div class="field">
+          <label>預產期 <span class="req">*</span></label>
+          <input type="date" name="dueDate">
+          <div class="error-text">請選擇預產期</div>
+        </div>
+        <div class="field">
+          <label>寶寶排行</label>
+          <div class="chip-group" data-name="babyOrderPregnant">
+            <label class="chip"><input type="radio" name="babyOrderPregnant" value="老大">老大</label>
+            <label class="chip"><input type="radio" name="babyOrderPregnant" value="老二">老二</label>
+            <label class="chip"><input type="radio" name="babyOrderPregnant" value="老三">老三</label>
+            <label class="chip"><input type="radio" name="babyOrderPregnant" value="雙寶">雙寶</label>
+            <label class="chip"><input type="radio" name="babyOrderPregnant" value="其他">其他</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 寶寶性別（共用） -->
+      <div class="card">
+        <p class="card-title">寶寶性別</p>
+        <div class="field" style="margin-bottom:0;">
+          <div class="chip-group sage" data-name="babyGender">
+            <label class="chip sage"><input type="radio" name="babyGender" value="男寶">男寶</label>
+            <label class="chip sage"><input type="radio" name="babyGender" value="女寶">女寶</label>
+            <label class="chip sage"><input type="radio" name="babyGender" value="雙寶">雙寶</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 參觀者資料 -->
+      <div class="card">
+        <p class="card-title">參觀者資料</p>
+        <div class="field">
+          <label>參觀者姓名 <span class="req">*</span></label>
+          <input type="text" name="visitorName" placeholder="請輸入姓名">
+          <div class="error-text">請填寫參觀者姓名</div>
+        </div>
+
+        <div class="field section-hide" id="fieldRelationship">
+          <label>與寶寶關係</label>
+          <div class="chip-group" data-name="relationship">
+            <label class="chip"><input type="radio" name="relationship" value="爸爸">爸爸</label>
+            <label class="chip"><input type="radio" name="relationship" value="媽媽">媽媽</label>
+            <label class="chip"><input type="radio" name="relationship" value="爺爺">爺爺</label>
+            <label class="chip"><input type="radio" name="relationship" value="奶奶">奶奶</label>
+            <label class="chip"><input type="radio" name="relationship" value="其他">其他</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>手機號碼 <span class="req">*</span></label>
+          <input type="tel" name="phone" placeholder="09xx-xxx-xxx" inputmode="numeric">
+          <div class="error-text">請填寫正確的手機號碼</div>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>地址</label>
+          <input type="text" name="address" placeholder="請輸入地址（選填）">
+        </div>
+      </div>
+
+      <!-- 入托資訊 -->
+      <div class="card">
+        <p class="card-title">入托資訊</p>
+        <div class="field">
+          <label>預計入托日</label>
+          <input type="text" name="plannedDate" placeholder="例：115年8月 或 越快越好">
+        </div>
+        <div class="field">
+          <label>照顧人員</label>
+          <div class="chip-group" data-name="caregiver">
+            <label class="chip"><input type="radio" name="caregiver" value="自家人為主">自家人為主</label>
+            <label class="chip"><input type="radio" name="caregiver" value="入托">入托</label>
+          </div>
+        </div>
+        <div class="inline-extra" id="enrollExtra">
+          <div class="deposit-row">
+            <div class="field">
+              <label>入托日期</label>
+              <input type="date" name="enrollDate">
+            </div>
+          </div>
+          <div class="deposit-row" style="margin-top:14px;">
+            <div class="field">
+              <label>訂金（元）</label>
+              <input type="number" name="deposit" placeholder="金額" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label>訂金方式</label>
+              <div class="chip-group" data-name="depositMethod">
+                <label class="chip"><input type="radio" name="depositMethod" value="現金">現金</label>
+                <label class="chip"><input type="radio" name="depositMethod" value="轉帳">轉帳</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 如何得知本中心 -->
+      <div class="card">
+        <p class="card-title">如何得知本中心</p>
+        <div class="field" style="margin-bottom:0;">
+          <div class="chip-group" data-name="howKnow">
+            <label class="chip"><input type="radio" name="howKnow" value="住附近或看到招牌">住附近／招牌</label>
+            <label class="chip"><input type="radio" name="howKnow" value="親友介紹">親友介紹</label>
+            <label class="chip"><input type="radio" name="howKnow" value="臉書">臉書</label>
+            <label class="chip"><input type="radio" name="howKnow" value="IG">IG</label>
+            <label class="chip"><input type="radio" name="howKnow" value="網路搜尋">網路搜尋</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 備註 -->
+      <div class="card">
+        <p class="card-title">備註</p>
+        <div class="field" style="margin-bottom:0;">
+          <textarea name="note" placeholder="其他想讓我們知道的事情（選填）"></textarea>
+        </div>
+      </div>
+
+      <footer class="submit-area">
+        <button type="submit" class="submit-btn" id="submitBtn">送出參觀資料</button>
+        <p class="footer-note">送出後資料將直接同步至本中心紀錄系統</p>
+      </footer>
+    </form>
+  </div>
+
+  <div class="msg-area" id="successScreen">
+    <div class="icon">🌿</div>
+    <h2>已收到您的資料</h2>
+    <p>謝謝您前來參觀小布迪音樂藝術托嬰中心，<br>我們會盡快與您聯繫，期待寶寶的到來！</p>
+  </div>
+
+  <div class="msg-area error" id="errorScreen">
+    <div class="icon">⚠️</div>
+    <h2>送出時發生問題</h2>
+    <p id="errorDetail">請檢查網路連線後再試一次，<br>或直接致電中心為您登記。</p>
+  </div>
+
+</div>
+
+<script>
+  // ===== 請將下方網址換成你部署 Google Apps Script 後取得的網址 =====
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxKRhSjthUjphgsh1qgnABvFdzjFTj1N-yJ6oUYpEHAH8rctAiNafAl_X61LzlNQ4s/exec";
+
+  // 今日日期顯示（民國年）
+  (function(){
+    const now = new Date();
+    const y = now.getFullYear() - 1911;
+    const m = now.getMonth() + 1;
+    const d = now.getDate();
+    document.getElementById('todayBadge').textContent = `參觀日期：民國 ${y} 年 ${m} 月 ${d} 日`;
+  })();
+
+  let babyStatus = 'pregnant';
+
+  const btnPregnant = document.getElementById('btnPregnant');
+  const btnBorn = document.getElementById('btnBorn');
+  const cardBabyBorn = document.getElementById('cardBabyBorn');
+  const cardBabyPregnant = document.getElementById('cardBabyPregnant');
+  const fieldRelationship = document.getElementById('fieldRelationship');
+
+  function setStatus(status){
+    babyStatus = status;
+    btnPregnant.classList.toggle('active', status === 'pregnant');
+    btnBorn.classList.toggle('active', status === 'born');
+
+    cardBabyBorn.classList.toggle('section-show', status === 'born');
+    cardBabyBorn.classList.toggle('section-hide', status !== 'born');
+
+    cardBabyPregnant.classList.toggle('section-show', status === 'pregnant');
+    cardBabyPregnant.classList.toggle('section-hide', status !== 'pregnant');
+
+    fieldRelationship.classList.toggle('section-show', status === 'born');
+    fieldRelationship.classList.toggle('section-hide', status !== 'born');
+  }
+
+  btnPregnant.addEventListener('click', () => setStatus('pregnant'));
+  btnBorn.addEventListener('click', () => setStatus('born'));
+  setStatus('pregnant');
+
+  // chip 選取效果
+  document.querySelectorAll('.chip-group').forEach(group => {
+    group.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        group.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+        chip.querySelector('input').checked = true;
+
+        if (chip.closest('[data-name="caregiver"]')) {
+          const isEnroll = chip.querySelector('input').value === '入托';
+          document.getElementById('enrollExtra').classList.toggle('show', isEnroll);
+        }
+      });
+    });
+  });
+
+  function getRadioValue(name){
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : '';
+  }
+
+  function clearErrors(){
+    document.querySelectorAll('.field.has-error').forEach(f => f.classList.remove('has-error'));
+  }
+
+  function showError(input){
+    input.closest('.field').classList.add('has-error');
+  }
+
+  function isValidPhone(v){
+    const digits = v.replace(/[^0-9]/g,'');
+    return digits.length >= 8;
+  }
+
+  document.getElementById('visitForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    clearErrors();
+
+    const form = e.target;
+    let valid = true;
+
+    const visitorName = form.visitorName.value.trim();
+    if (!visitorName) { showError(form.visitorName); valid = false; }
+
+    const phone = form.phone.value.trim();
+    if (!phone || !isValidPhone(phone)) { showError(form.phone); valid = false; }
+
+    if (babyStatus === 'born') {
+      const babyName = form.babyName.value.trim();
+      if (!babyName) { showError(form.babyName); valid = false; }
+      const babyBirthday = form.babyBirthday.value;
+      if (!babyBirthday) { showError(form.babyBirthday); valid = false; }
+    } else {
+      const dueDate = form.dueDate.value;
+      if (!dueDate) { showError(form.dueDate); valid = false; }
+    }
+
+    if (!valid) {
+      const firstError = document.querySelector('.field.has-error');
+      if (firstError) firstError.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+
+    const now = new Date();
+    const y = now.getFullYear() - 1911;
+    const visitDateStr = `民國${y}年${now.getMonth()+1}月${now.getDate()}日`;
+
+    const payload = {
+      babyStatus: babyStatus,
+      visitDate: visitDateStr,
+      visitorName: visitorName,
+      relationship: babyStatus === 'born' ? getRadioValue('relationship') : '',
+      phone: phone,
+      address: form.address.value.trim(),
+      babyGender: getRadioValue('babyGender'),
+      plannedDate: form.plannedDate.value.trim(),
+      caregiver: getRadioValue('caregiver'),
+      enrollDate: form.enrollDate.value,
+      deposit: form.deposit.value,
+      depositMethod: getRadioValue('depositMethod'),
+      howKnow: getRadioValue('howKnow'),
+      note: form.note.value.trim()
+    };
+
+    if (babyStatus === 'born') {
+      payload.babyName = form.babyName.value.trim();
+      payload.babyBirthday = form.babyBirthday.value;
+      payload.babyOrder = getRadioValue('babyOrder');
+    } else {
+      payload.dueDate = form.dueDate.value;
+      payload.babyOrder = getRadioValue('babyOrderPregnant');
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送出中...';
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    })
+    .then(() => {
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+    })
+    .catch((err) => {
+      document.getElementById('app').style.display = 'none';
+      document.getElementById('errorScreen').style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = '送出參觀資料';
+    });
+  });
+</script>
+</body>
+</html>
